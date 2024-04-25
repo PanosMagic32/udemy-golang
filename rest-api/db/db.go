@@ -9,7 +9,8 @@ import (
 var DB *sql.DB
 
 func InitDB() {
-	DB, err := sql.Open("sqlite3", "api.db")
+	db, err := sql.Open("sqlite3", "api.db")
+	DB = db
 
 	if err != nil {
 		println("ERROR")
@@ -20,10 +21,10 @@ func InitDB() {
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
 
-	createTables(DB)
+	createTables()
 }
 
-func createTables(DB *sql.DB) {
+func createTables() {
 	createUsersTable := `
 	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +32,6 @@ func createTables(DB *sql.DB) {
 		password TEXT NOT NULL
 	)
 	`
-
 	_, err := DB.Exec(createUsersTable)
 
 	if err != nil {
@@ -49,7 +49,6 @@ func createTables(DB *sql.DB) {
 		FOREIGN KEY(user_id) REFERENCES users(id)
 	)
 	`
-
 	_, err = DB.Exec(createEventsTable)
 
 	if err != nil {
